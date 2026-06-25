@@ -1,0 +1,21 @@
+:root{
+  --bg:#121213;--cell:#3a3a3c;--text:#ffffff;
+  --correct:#6aaa64;--present:#c9b458;--absent:#3a3a3c;
+}
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f6f6f6;color:#111;margin:0;padding:24px}
+.app{max-width:540px;margin:0 auto}
+.controls{display:flex;gap:12px;align-items:center;margin-bottom:12px;place-content: center;}
+.center{display:flex;justify-content:center}
+.board{display:flex;flex-direction:column;gap:8px}
+.board-row{display:flex;gap:8px}
+.cell{width:52px;height:52px;border:2px solid #d3d6da;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;background:white}
+.cell.correct{background:var(--correct);color:white;border:2px solid var(--correct)}
+.cell.present{background:var(--present);color:white;border:2px solid var(--present)}
+.cell.absent{background:var(--absent);color:white;border:2px solid var(--absent)}
+.keyboard{margin-top:18px}
+.key-row{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.key{min-width:40px;padding:10px;border-radius:4px;border:0;background:#d3d6da;font-weight:700}
+.key.correct{background:var(--correct);color:white}
+.key.present{background:var(--present);color:white}
+.key.absent{background:#9aa0a6;color:white}
+.key.action{min-width:64px}
