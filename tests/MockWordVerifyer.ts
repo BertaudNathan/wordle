@@ -1,5 +1,8 @@
 import { IWordVerifyer } from "../domain/interfaces/IWordVerifyer";
 
+/*
+Implementation mocké de la verification des mots, pour les tests unitaires
+*/
 export class MockWordVerifyer implements IWordVerifyer {
     private validWords: Set<string>;
 

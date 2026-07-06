@@ -1,5 +1,7 @@
 import { IWordVerifyer } from "../domain/interfaces/IWordVerifyer";
-
+/*
+Implementation de la verification des mots via une API
+*/
 export class APIWordVerifyer implements IWordVerifyer {
     private apiUrl: string;
     constructor() {

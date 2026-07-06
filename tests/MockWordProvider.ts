@@ -2,6 +2,10 @@ import { IWordProvider } from "../domain/interfaces/IWordProvider";
 import { Letter } from "../domain/models/letter";
 import { Word } from "../domain/models/word";
 
+
+/*
+Implementation mocké du système de choix de mot, pour les tests unitaires
+*/
 export class MockWordProvider implements IWordProvider {
     private fixedWord: string | undefined;
 
