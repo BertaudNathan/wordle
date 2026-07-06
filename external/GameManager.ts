@@ -8,6 +8,7 @@ import { LetterResult } from '../domain/models/letterResult';
 import { InvalidWordError } from '../domain/errors/invalidWordError';
 import { InvalidSizeWordError } from '../domain/errors/invalidSizeWordError';
 import { AlreadyDraftedWordError } from '../domain/errors/alreadyDraftedWordError';
+import { ActiveGameError } from '../domain/errors/activeGameError';
 
 
 export class GameManager {
@@ -28,10 +29,10 @@ export class GameManager {
 
 
     async guessWord(word: string | undefined): Promise<LetterResult[]> {
-        if (!this.game) throw new Error('No active game');
-        if (!word) throw new Error('No guess provided');
+        if (!this.game) throw new ActiveGameError();
+        if (!word || !/^[A-Z]+$/i.test(word)) throw new InvalidWordError();
         if (word.length !== this.game.word.Letters.length) throw new InvalidSizeWordError();
-        if (!await this.isValidWord(word)) throw new InvalidWordError();
+        if (!await this.wordVerifyer.verifyWord(word)) throw new InvalidWordError();
         if (this.game.tries.some(t => t.word.toUpperCase() === word.toUpperCase())) throw new AlreadyDraftedWordError();
         const guess = word.toUpperCase();
         const target = this.game.word.Letters.map(l => l.value.toUpperCase()).join('');

@@ -5,6 +5,7 @@ import { MockWordVerifyer } from "./MockWordVerifyer";
 import { InvalidWordError } from "../domain/errors/invalidWordError";
 import { InvalidSizeWordError } from "../domain/errors/invalidSizeWordError";
 import { AlreadyDraftedWordError } from "../domain/errors/alreadyDraftedWordError";
+import { ActiveGameError } from "../domain/errors/activeGameError";
 
 
 describe("GameManager", () => {
@@ -37,6 +38,15 @@ describe("GameManager", () => {
     });
 
     describe("guessWord", () => {
+
+      it("should reject if no game is active", async () => {
+        //Given
+        const gameManager = new GameManager(new MockWordProvider(),new MockWordVerifyer());
+        //When
+        //Then
+        expect(gameManager.guessWord("APPLE")).rejects.toThrow(ActiveGameError)
+      });
+
       it("should accept a guess and return feedback", async () => {
         //Given
         const gameManager = new GameManager(new MockWordProvider(),new MockWordVerifyer());
@@ -124,15 +134,14 @@ describe("GameManager", () => {
     describe("isGameLost", () => {
       it("should return true when max attempts exceeded", async () => {
         //Given
-        const gameManager = new GameManager(new MockWordProvider(), new MockWordVerifyer());
-        await   gameManager.startGame(5);
+        const secretWord = "APPLE";
+        const wrongGuesses = ["WRONG", "GRAPE", "PEACH", "BERRY", "MANGO", "DWARF"];
+        const gameManager = new GameManager(new MockWordProvider(secretWord), new MockWordVerifyer());
+        await gameManager.startGame(5);
         //When
-          await gameManager.guessWord("WRONG");
-          await gameManager.guessWord("grape");
-          await gameManager.guessWord("peach");
-          await gameManager.guessWord("berry");
-          await gameManager.guessWord("mango");
-          await gameManager.guessWord("DWARF");
+        for (const guess of wrongGuesses) {
+          await gameManager.guessWord(guess);
+        }
         //Then
         expect(gameManager.isGameLost()).toBe(true);
       });
@@ -146,6 +155,39 @@ describe("GameManager", () => {
         //Then
         expect(gameManager.isGameLost()).toBe(false);
       });
+    });
+
+    describe("guessWord - multiple letters rule", () => {
+
+      it("should not mark a letter as present twice if it appears only once in the secret", async () => {
+        // Secret: CRANE — only one A and one R
+        // Guess:  RADAR — has two A's and two R's
+        // Expected: R=present, A=present, D=absent, A=absent (already consumed), R=absent (already consumed)
+        const secretWord = "CRANE";
+        const playerGuess = "RADAR";
+        const validWords = ["crane", "radar"];
+        const gameManager = new GameManager(new MockWordProvider(secretWord), new MockWordVerifyer(validWords));
+        await gameManager.startGame(5);
+        //When
+        const feedback = await gameManager.guessWord(playerGuess);
+        //Then
+        expect(feedback).toEqual(['present', 'present', 'absent', 'absent', 'absent']);
+      });
+
+      it("should mark the correct occurrence as correct and the extra occurrence as present when the secret has a duplicate letter", async () => {
+        // Secret: SPEED — two E's
+        // Guess:  THREE — two E's: E at pos 3 matches exactly, E at pos 4 is present (one E remains)
+        const secretWord = "SPEED";
+        const playerGuess = "THREE";
+        const validWords = ["speed", "three"];
+        const gameManager = new GameManager(new MockWordProvider(secretWord), new MockWordVerifyer(validWords));
+        await gameManager.startGame(5);
+        //When
+        const feedback = await gameManager.guessWord(playerGuess);
+        //Then
+        expect(feedback).toEqual(['absent', 'absent', 'absent', 'correct', 'present']);
+      });
+
     });
 
     describe("getSecretWord", () => {

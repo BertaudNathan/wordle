@@ -3,33 +3,15 @@ import { Letter } from "../domain/models/letter";
 import { Word } from "../domain/models/word";
 
 export class MockWordProvider implements IWordProvider {
+    private fixedWord: string | undefined;
+
+    public constructor(fixedWord?: string) {
+        this.fixedWord = fixedWord;
+    }
+
     getRandomWord(size: number): Promise<Word> {
-        return new Promise<Word>((resolve, reject) => {
-            if (size == 5) {
-                const letters: Letter[] = [
-                    new Letter("A"),
-                    new Letter("P"),
-                    new Letter("P"),
-                    new Letter("L"),
-                    new Letter("E")
-                ];
-                const word = new Word(letters);
-                resolve(word);
-            }
-            else {
-                const letters: Letter[] = [];
-                for (let i = 0; i < size; i++) {
-                    const letter = new Letter(String.fromCharCode(97 + Math.floor(Math.random() * 26)));
-                    letters.push(letter);
-                }
-                const word = new Word(letters);
-                resolve(word);
-            }
-        });
+        const wordStr = this.fixedWord ?? "APPLE";
+        const letters: Letter[] = wordStr.split('').map(c => new Letter(c.toUpperCase()));
+        return Promise.resolve(new Word(letters));
     }
-
-    public constructor() {
-
-    }
-
 }
