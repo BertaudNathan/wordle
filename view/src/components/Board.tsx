@@ -5,12 +5,17 @@ export default function Board({ guesses, currentGuess, size, maxAttempts }: { gu
   for (let i = 0; i < maxAttempts; i++) {
     const g = guesses[i]
     const letters = []
+    const isLastGuess = g && i === guesses.length - 1
     if (g) {
       for (let j = 0; j < size; j++) {
         const ch = g.guess[j] || ''
         const status = g.feedback[j] || 'unknown'
         letters.push(
-          <div key={j} className={`cell ${status}`}>
+          <div
+            key={j}
+            className={`cell ${status}${isLastGuess ? ' flip' : ''}`}
+            style={isLastGuess ? ({ '--delay': `${j * 0.15}s` } as React.CSSProperties) : undefined}
+          >
             {ch}
           </div>
         )

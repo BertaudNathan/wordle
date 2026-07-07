@@ -7,8 +7,8 @@ body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f6f6f6;color:#111;
 .controls{display:flex;gap:12px;align-items:center;margin-bottom:12px;place-content: center;}
 .center{display:flex;justify-content:center}
 .board{display:flex;flex-direction:column;gap:8px}
-.board-row{display:flex;gap:8px}
-.cell{width:52px;height:52px;border:2px solid #d3d6da;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;background:white}
+.board-row{display:flex;gap:8px;perspective:300px}
+.cell{width:52px;height:52px;border:2px solid #d3d6da;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;background:white;backface-visibility:visible}
 .cell.correct{background:var(--correct);color:white;border:2px solid var(--correct)}
 .cell.present{background:var(--present);color:white;border:2px solid var(--present)}
 .cell.absent{background:var(--absent);color:white;border:2px solid var(--absent)}
@@ -19,3 +19,14 @@ body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f6f6f6;color:#111;
 .key.present{background:var(--present);color:white}
 .key.absent{background:#9aa0a6;color:white}
 .key.action{min-width:64px}
+.flip {
+  animation: flip 0.5s ease-in-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes flip {
+  0%   { transform: rotateX(0deg);   background: white !important; border-color: #d3d6da !important; color: transparent; }
+  49%  { transform: rotateX(-90deg); background: white !important; border-color: #d3d6da !important; color: transparent; }
+  50%  { transform: rotateX(-90deg); }
+  100% { transform: rotateX(0deg); }
+}

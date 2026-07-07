@@ -44,6 +44,7 @@ export default function App() {
     if (k === 'ENTER') return submit()
     if (k === 'BACK' || k === 'BACKSPACE') return setCurrent((c) => c.slice(0, -1))
     if (current.length >= size) return
+    if (k.length !== 1) return
     setCurrent((c) => (c + k).slice(0, size))
   }
 
@@ -78,7 +79,7 @@ export default function App() {
   }
 
   return (
-    <div className="app" onKeyUp={(e) => onKey(e.key.toUpperCase())} tabIndex={0}>
+    <div autoFocus={true} className="app" onKeyUp={(e) => onKey(e.key.toUpperCase())} tabIndex={0}>
       <h1 style={{ textAlign: 'center' }}>Wordle</h1>
       <div className="controls">
         <label>Longueur: <input type="number" min={3} max={10} value={size} onChange={(e) => setSize(Number(e.target.value))} /></label>
