@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { GameManager } from '../../external/GameManager'
 import { APIWordProvider } from '../../external/APIWordProvider'
 import { APIWordVerifyer } from '../../external/APIWordVerifyer'
@@ -17,6 +17,11 @@ export default function App() {
   const [keyStates, setKeyStates] = useState<Record<string, 'correct' | 'present' | 'absent'>>({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const appRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    appRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     start()
@@ -79,7 +84,7 @@ export default function App() {
   }
 
   return (
-    <div autoFocus={true} className="app" onKeyUp={(e) => onKey(e.key.toUpperCase())} tabIndex={0}>
+      <div ref={appRef} className="app" onKeyUp={(e) => onKey(e.key.toUpperCase())} tabIndex={0} style={{ outline: 'none' }}>
       <h1 style={{ textAlign: 'center' }}>Wordle</h1>
       <div className="controls">
         <label>Longueur: <input type="number" min={3} max={10} value={size} onChange={(e) => setSize(Number(e.target.value))} /></label>
